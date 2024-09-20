@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: Workflow
 
 inputs:
-  database_name: File
+  database_input: File
   analysis_condition: string
   hpc_center: string
 
@@ -16,7 +16,7 @@ steps:
   access_database:
     run: access_database.cwl
     in:
-      database_input: database_name
+      database_input: database_input
     out: [database_vectors]
 
   # Step 2: Analysis Tool

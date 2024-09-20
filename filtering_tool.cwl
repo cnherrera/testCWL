@@ -2,20 +2,20 @@ cwlVersion: v1.2
 class: CommandLineTool
 
 baseCommand: python3
-arguments: ["run_simulation.py"]
+arguments: ["filtering_tool.py"]
 
 inputs:
-  job_to_be_submitted:
+  data:
     type: File
     inputBinding:
       position: 1
-  hpc_center:
+  condition:
     type: string
     inputBinding:
       position: 2
 
 outputs:
-  simulation_data:
+  attributes:
     type: File
     outputBinding:
-      glob: "*.yaml"
+      glob: "*.csv"

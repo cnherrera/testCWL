@@ -2,20 +2,16 @@ cwlVersion: v1.2
 class: CommandLineTool
 
 baseCommand: python3
-arguments: ["run_simulation.py"]
+arguments: ["create_bigdft_inp.py"]
 
 inputs:
-  job_to_be_submitted:
+  attributes:
     type: File
     inputBinding:
       position: 1
-  hpc_center:
-    type: string
-    inputBinding:
-      position: 2
 
 outputs:
-  simulation_data:
+  bigdft_inp_file:
     type: File
     outputBinding:
-      glob: "*.yaml"
+      glob: "*.txt"
