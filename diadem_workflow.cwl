@@ -2,9 +2,15 @@ cwlVersion: v1.2
 class: Workflow
 
 inputs:
-  database_input: File
-  analysis_condition: string
-  hpc_center: string
+  database_name: 
+    type: File
+    doc: "String with the database name"
+  database_filter_condition: 
+    type: string
+    doc: "String giving the condition to filter the database and retrieve the data in CSV form"
+  hpc_center: 
+    type: string
+    doc: "The HPC center to which the BigDFT simulation job will be submitted"
 
 outputs:
   simulation_output:
@@ -16,29 +22,32 @@ steps:
   access_database:
     run: access_database.cwl
     in:
-      database_input: database_input
-    out: [database_vectors]
+      database_input: database_name
+    out: [database_content]
+    doc: "This step access and retrieves the database" 
 
-  # Step 2: Analysis Tool
-  analysis_tool:
-    run: analysis_tool.cwl
+  # Step 2: Filtering Tool
+  filtering_tool:
+    run: filtering_tool.cwl
     in:
-      vectors: access_database/database_vectors
-      condition: analysis_condition
+      data: access_database/database_content
+      condition: database_filter_condition
     out: [attributes]
+    doc: "This step runs the conditions to filter the database, output are the values needed to create the inp file for the BigDFT simulation"
 
   # Step 3: Create BigDFT Simulation Template
-  create_template:
-    run: create_template.cwl
+  create_bigdft_inp:
+    run: create_bigdft_inp.cwl
     in:
       attributes: analysis_tool/attributes
-    out: [template_file]
+    out: [bigdft_inp_file]
+    doc: "This step generates a template for the BigDFT simulation using the analysis results."
 
   # Step 4: Job Submission to HPC Center
   run_simulation:
     run: run_simulation.cwl
     in:
-      template: create_template/template_file
+      job_to_be_submitted: create_bigdft_inp/bigdft_inp_file
       hpc_center: hpc_center
     out: [simulation_data]
 
